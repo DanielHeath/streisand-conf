@@ -1,0 +1,18 @@
+---
+- hosts: all
+  sudo: yes
+  tasks:
+  - name: Make dir for learn-address script
+    file: dest=/var/lib/openvpn/ state=directory
+
+  - name: Copy learn-address script into place
+    copy: src=learn-address.sh dest=/var/lib/openvpn/learn-address.sh
+
+  - name: add openvpn config
+    lineinfile: dest=/etc/openvpn/server.conf line="learn-address /var/lib/openvpn/learn-address.sh"
+
+  - name: Set dnsmasq conf to add hosts
+    lineinfile: dest=/etc/dnsmasq.conf line="addn-hosts=/etc/hosts.openvpn-clients"
+
+touch /etc/hosts.openvpn-clients
+chmod a+w /etc/hosts.openvpn-clients
